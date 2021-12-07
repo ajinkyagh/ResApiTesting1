@@ -1,13 +1,15 @@
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import io.restassured.path.json.JsonPath;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.config.EncoderConfig.encoderConfig;
+import  static org.hamcrest.Matchers.*;
 
 public class Basics {
     public static void main(String[] args){
         RestAssured.baseURI="https://rahulshettyacademy.com";
-        given().config(RestAssured.config().encoderConfig(encoderConfig().encodeContentTypeAs("application/jason", ContentType.TEXT))).log().all().queryParam("key",": key =qaclick123").header("Content-Type","application/jason")
+        String response=given().config(RestAssured.config().encoderConfig(encoderConfig().encodeContentTypeAs("application/jason", ContentType.TEXT))).log().all().queryParam("key",": key =qaclick123").header("Content-Type","application/jason")
                 .body("{\n" +
                         "  \"location\": {\n" +
                         "    \"lat\": -38.383494,\n" +
@@ -25,6 +27,12 @@ public class Basics {
                         "  \"language\": \"French-IN\"\n" +
                         "}\n")
                             .when().post("/maps/api/place/add/json")
-                            .then().log().all().assertThat().statusCode(200);
+                            .then().log().all().assertThat().statusCode(200).body("scope",equalTo("APP")).extract().asString()
+                                ;
+
+        JsonPath js=new JsonPath(response);//For parsing jason
+        String placeId=js.getString("place_id");
+
+        System.out.println(placeId);
     }
 }
