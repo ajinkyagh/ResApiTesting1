@@ -1,3 +1,5 @@
+package ApiTestingIntro;
+
 import files.ReUsableMethods;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
